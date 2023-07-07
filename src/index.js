@@ -34,12 +34,31 @@ async function main() {
 	const baseclover = baseRaw && (await parse(baseRaw))
 	const body = diff(clover, baseclover, options)
 
-	await new GitHub(token).issues.createComment({
-		repo: context.repo.repo,
+	const { data: comments } = await github.rest.issues.listComments({
 		owner: context.repo.owner,
-		issue_number: context.payload.pull_request.number,
-		body: diff(clover, baseclover, options),
+		repo: context.repo.repo,
+		issue_number: context.issue.number,
 	})
+
+	const botComment = comments.find(comment => {
+		return comment.user.type === 'Bot' && comment.body.includes('Coverage after merging')
+	})
+
+	if (botComment) {
+		await github.rest.issues.updateComment({
+			owner: context.repo.owner,
+			repo: context.repo.repo,
+			comment_id: botComment.id,
+			body: body
+		})
+	} else {
+		await new GitHub(token).issues.createComment({
+			repo: context.repo.repo,
+			owner: context.repo.owner,
+			issue_number: context.payload.pull_request.number,
+			body: diff(clover, baseclover, options),
+		})
+	}
 }
 
 main().catch(function(err) {
