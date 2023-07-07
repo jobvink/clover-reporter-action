@@ -34,7 +34,9 @@ async function main() {
 	const baseclover = baseRaw && (await parse(baseRaw))
 	const body = diff(clover, baseclover, options)
 
-	const { data: comments } = await github.rest.issues.listComments({
+	const github = new GitHub(token)
+
+	const { data: comments } = await github.issues.listComments({
 		owner: context.repo.owner,
 		repo: context.repo.repo,
 		issue_number: context.issue.number,
@@ -45,14 +47,14 @@ async function main() {
 	})
 
 	if (botComment) {
-		await github.rest.issues.updateComment({
+		await github.issues.updateComment({
 			owner: context.repo.owner,
 			repo: context.repo.repo,
 			comment_id: botComment.id,
 			body: body
 		})
 	} else {
-		await new GitHub(token).issues.createComment({
+		await github.issues.createComment({
 			repo: context.repo.repo,
 			owner: context.repo.owner,
 			issue_number: context.payload.pull_request.number,
