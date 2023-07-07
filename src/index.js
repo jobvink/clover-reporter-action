@@ -40,13 +40,9 @@ async function main() {
 		issue_number: context.issue.number,
 	})
 
-	console.log(comments)
-
 	const botComment = comments.find(comment => {
 		return comment.user.type === 'Bot' && comment.body.includes('Coverage after merging')
 	})
-
-	console.log(botComment)
 
 	if (botComment) {
 		await github.rest.issues.updateComment({
