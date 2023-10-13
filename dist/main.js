@@ -31009,9 +31009,9 @@ function uncovered(file, options) {
 		.join(", ")
 }
 
-function comment(clover, options) {
+function comment(clover, options, name) {
 	return fragment(
-		`Coverage after merging ${b(options.head)} into ${b(options.base)}`,
+		`${name} Coverage after merging ${b(options.head)} into ${b(options.base)}`,
 		table(tbody(tr(th(percentage(clover).toFixed(2), "%")))),
 		"\n\n",
 		details(summary("Coverage Report"), tabulate(clover, options)),
@@ -31020,7 +31020,7 @@ function comment(clover, options) {
 
 function diff(clover, before, options, name) {
 	if (!before) {
-		return comment(clover, options)
+		return comment(clover, options, name)
 	}
 
 	const pbefore = percentage(before);
