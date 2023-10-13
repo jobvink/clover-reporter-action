@@ -31018,7 +31018,7 @@ function comment(clover, options) {
 	)
 }
 
-function diff(clover, before, options) {
+function diff(clover, before, options, name) {
 	if (!before) {
 		return comment(clover, options)
 	}
@@ -31030,7 +31030,7 @@ function diff(clover, before, options) {
 	const arrow = pdiff === 0 ? "" : pdiff < 0 ? "▾" : "▴";
 
 	return fragment(
-		`Coverage after merging ${b(options.head)} into ${b(options.base)}`,
+		`${name} Coverage after merging ${b(options.head)} into ${b(options.base)}`,
 		table(
 			tbody(
 				tr(
@@ -31072,7 +31072,7 @@ async function main$1() {
 
 	const clover = await parse$1(raw);
 	const baseclover = baseRaw && (await parse$1(baseRaw));
-	const body = diff(clover, baseclover, options);
+	const body = diff(clover, baseclover, options, name);
 
 	const github = new github_2(token);
 
@@ -31083,7 +31083,7 @@ async function main$1() {
 	});
 
 	const botComment = comments.find(comment => {
-		return comment.user.type === "Bot" && comment.body.includes(name + " after merging")
+		return comment.user.type === "Bot" && comment.body.includes(`${name} Coverage after merging`)
 	});
 
 	if (botComment) {
@@ -31098,7 +31098,7 @@ async function main$1() {
 			repo: github_1.repo.repo,
 			owner: github_1.repo.owner,
 			issue_number: github_1.payload.pull_request.number,
-			body: diff(clover, baseclover, options),
+			body: diff(clover, baseclover, options, name),
 		});
 	}
 }
