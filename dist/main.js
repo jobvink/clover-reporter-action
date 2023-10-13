@@ -31048,6 +31048,7 @@ async function main$1() {
 	const token = core$1.getInput("github-token");
 	const cloverFile = core$1.getInput("clover-file") || "./coverage/clover.xml";
 	const baseFile = core$1.getInput("clover-base");
+	const name = core$1.getInput("name") || "Coverage";
 
 	const raw = await fs.promises.readFile(cloverFile, "utf-8").catch(err => null);
 	if (!raw) {
@@ -31082,7 +31083,7 @@ async function main$1() {
 	});
 
 	const botComment = comments.find(comment => {
-		return comment.user.type === 'Bot' && comment.body.includes('Coverage after merging')
+		return comment.user.type === "Bot" && comment.body.includes(name + " after merging")
 	});
 
 	if (botComment) {
