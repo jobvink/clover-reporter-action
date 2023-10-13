@@ -31018,7 +31018,7 @@ function comment(clover, options) {
 	)
 }
 
-function diff(clover, before, options) {
+function diff(clover, before, options, name) {
 	if (!before) {
 		return comment(clover, options)
 	}
@@ -31030,7 +31030,7 @@ function diff(clover, before, options) {
 	const arrow = pdiff === 0 ? "" : pdiff < 0 ? "▾" : "▴";
 
 	return fragment(
-		`Coverage after merging ${b(options.head)} into ${b(options.base)}`,
+		`${name} Coverage after merging ${b(options.head)} into ${b(options.base)}`,
 		table(
 			tbody(
 				tr(
@@ -31083,7 +31083,7 @@ async function main$1() {
 	});
 
 	const botComment = comments.find(comment => {
-		return comment.user.type === "Bot" && comment.body.includes(name + " after merging")
+		return comment.user.type === "Bot" && comment.body.includes(`${name} Coverage after merging`)
 	});
 
 	if (botComment) {
