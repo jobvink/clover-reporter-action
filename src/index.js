@@ -9,6 +9,7 @@ async function main() {
 	const token = core.getInput("github-token")
 	const cloverFile = core.getInput("clover-file") || "./coverage/clover.xml"
 	const baseFile = core.getInput("clover-base")
+	const name = core.getInput("name")
 
 	const raw = await fs.readFile(cloverFile, "utf-8").catch(err => null)
 	if (!raw) {
@@ -43,7 +44,7 @@ async function main() {
 	})
 
 	const botComment = comments.find(comment => {
-		return comment.user.type === 'Bot' && comment.body.includes('Coverage after merging')
+		return comment.user.type === 'Bot' && comment.body.includes(name + ' after merging')
 	})
 
 	if (botComment) {
